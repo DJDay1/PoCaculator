@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포카치아 레시피 계산기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>포카치아 레시피 계산기</h1>
+        <div class="input-section">
+            <label for="levain">르방 (g):</label>
+            <input type="number" id="levain" value="400">
+            
+            <label for="water">물 (g):</label>
+            <input type="number" id="water" value="1030">
+            
+            <label for="flour">강력분 (g):</label>
+            <input type="number" id="flour" value="1320">
+            
+            <label for="oliveOil">올리브오일 (g):</label>
+            <input type="number" id="oliveOil" value="88">
+            
+            <label for="salt">소금 (g):</label>
+            <input type="number" id="salt" value="22">
+        </div>
+        <div class="result-section">
+            <h2>계산된 레시피:</h2>
+            <p id="result"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
