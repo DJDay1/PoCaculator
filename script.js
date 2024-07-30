@@ -37,5 +37,5 @@ ingredients.forEach(ing => {
 });
 
 // 초기값 설정
-document.getElementById('levain').value = 400;
-calculateRecipe(); // 초기 계산
+//document.getElementById('levain').value = 400;
+//calculateRecipe(); // 초기 계산
