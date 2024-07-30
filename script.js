@@ -14,44 +14,33 @@ const koreanNames = {
     salt: '소금'
 };
 
-function calculateRecipe() {
-    let changedRatio = 1;
-    let changedIngredient = '';
-    
+function calculateRecipe(changedIngredient) {
+    const changedValue = parseFloat(document.getElementById(changedIngredient).value);
+    if (isNaN(changedValue) || changedValue <= 0) return;
+
+    const ratio = changedValue / originalRatio[changedIngredient];
+
     ingredients.forEach(ing => {
-        const input = document.getElementById(ing);
-        const value = parseFloat(input.value);
-        if (!isNaN(value) && value > 0) {
-            const ratio = value / originalRatio[ing];
-            if (Math.abs(ratio - 1) > 0.0001) {  // 작은 변화도 감지
-                changedRatio = ratio;
-                changedIngredient = ing;
-            }
-        }
-        // 입력값이 비어있으면 원래 값으로 설정
-        if (input.value === '') {
-            input.value = originalRatio[ing];
+        if (ing !== changedIngredient) {
+            const newValue = (originalRatio[ing] * ratio).toFixed(1);
+            document.getElementById(ing).value = newValue;
         }
     });
-
-    let result = '';
-    ingredients.forEach(ing => {
-        let newValue;
-        if (ing === changedIngredient) {
-            newValue = parseFloat(document.getElementById(ing).value);
-        } else {
-            newValue = originalRatio[ing] * changedRatio;
-        }
-        result += `${koreanNames[ing]}: ${newValue.toFixed(1)}g<br>`;
-    });
-
-    document.getElementById('result').innerHTML = result;
 }
 
 ingredients.forEach(ing => {
     const input = document.getElementById(ing);
-    input.addEventListener('input', calculateRecipe);
-    input.addEventListener('change', calculateRecipe);  // change 이벤트 추가
+    input.addEventListener('input', () => calculateRecipe(ing));
+    input.addEventListener('change', () => calculateRecipe(ing));
+    
+    // 레이블 추가
+    const label = document.createElement('label');
+    label.htmlFor = ing;
+    label.textContent = `${koreanNames[ing]} (g): `;
+    input.parentNode.insertBefore(label, input);
 });
 
-calculateRecipe(); // 초기 계산
+// 초기값 설정
+ingredients.forEach(ing => {
+    document.getElementById(ing).value = originalRatio[ing];
+});
