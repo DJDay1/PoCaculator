@@ -15,21 +15,19 @@ const koreanNames = {
 };
 
 function calculateRecipe() {
-    let changedRatio = null;
+    let changedRatio = 1;
     let changedIngredient = '';
     
     ingredients.forEach(ing => {
         const value = parseFloat(document.getElementById(ing).value);
-        if (!isNaN(value) && value !== 0) {
+        if (!isNaN(value) && value > 0) {
             const ratio = value / originalRatio[ing];
-            if (changedRatio === null || ratio !== 1) {
+            if (ratio !== 1) {
                 changedRatio = ratio;
                 changedIngredient = ing;
             }
         }
     });
-
-    if (changedRatio === null) changedRatio = 1;
 
     let result = '';
     ingredients.forEach(ing => {
@@ -37,9 +35,9 @@ function calculateRecipe() {
         if (ing === changedIngredient) {
             newValue = parseFloat(document.getElementById(ing).value);
         } else {
-            newValue = (originalRatio[ing] * changedRatio).toFixed(1);
+            newValue = originalRatio[ing] * changedRatio;
         }
-        result += `${koreanNames[ing]}: ${newValue}g<br>`;
+        result += `${koreanNames[ing]}: ${newValue.toFixed(1)}g<br>`;
     });
 
     document.getElementById('result').innerHTML = result;
