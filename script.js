@@ -15,17 +15,30 @@ const koreanNames = {
 };
 
 function calculateRecipe() {
-    let changedRatio = 1;
+    let changedRatio = null;
+    let changedIngredient = '';
     
     ingredients.forEach(ing => {
-        const value = parseFloat(document.getElementById(ing).value) || 0;
-        const ratio = value / originalRatio[ing];
-        if (ratio !== 0 && ratio < changedRatio) changedRatio = ratio;
+        const value = parseFloat(document.getElementById(ing).value);
+        if (!isNaN(value) && value !== 0) {
+            const ratio = value / originalRatio[ing];
+            if (changedRatio === null || ratio !== 1) {
+                changedRatio = ratio;
+                changedIngredient = ing;
+            }
+        }
     });
+
+    if (changedRatio === null) changedRatio = 1;
 
     let result = '';
     ingredients.forEach(ing => {
-        const newValue = (originalRatio[ing] * changedRatio).toFixed(1);
+        let newValue;
+        if (ing === changedIngredient) {
+            newValue = parseFloat(document.getElementById(ing).value);
+        } else {
+            newValue = (originalRatio[ing] * changedRatio).toFixed(1);
+        }
         result += `${koreanNames[ing]}: ${newValue}g<br>`;
     });
 
