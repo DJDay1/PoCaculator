@@ -19,13 +19,18 @@ function calculateRecipe() {
     let changedIngredient = '';
     
     ingredients.forEach(ing => {
-        const value = parseFloat(document.getElementById(ing).value);
+        const input = document.getElementById(ing);
+        const value = parseFloat(input.value);
         if (!isNaN(value) && value > 0) {
             const ratio = value / originalRatio[ing];
-            if (ratio !== 1) {
+            if (Math.abs(ratio - 1) > 0.0001) {  // 작은 변화도 감지
                 changedRatio = ratio;
                 changedIngredient = ing;
             }
+        }
+        // 입력값이 비어있으면 원래 값으로 설정
+        if (input.value === '') {
+            input.value = originalRatio[ing];
         }
     });
 
@@ -46,7 +51,7 @@ function calculateRecipe() {
 ingredients.forEach(ing => {
     const input = document.getElementById(ing);
     input.addEventListener('input', calculateRecipe);
-    input.addEventListener('blur', calculateRecipe);
+    input.addEventListener('change', calculateRecipe);  // change 이벤트 추가
 });
 
 calculateRecipe(); // 초기 계산
