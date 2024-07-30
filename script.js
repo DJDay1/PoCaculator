@@ -1,10 +1,10 @@
 const ingredients = ['levain', 'water', 'flour', 'oliveOil', 'salt'];
 const originalRatio = {
-    levain: 1,  // 르방을 1g로 시작
-    water: 2.575,  // 1030 / 400
-    flour: 3.3,    // 1320 / 400
-    oliveOil: 0.22, // 88 / 400
-    salt: 0.055    // 22 / 400
+    levain: 400,
+    water: 1030,
+    flour: 1320,
+    oliveOil: 88,
+    salt: 22
 };
 const koreanNames = {
     levain: '르방',
@@ -15,16 +15,34 @@ const koreanNames = {
 };
 
 function calculateRecipe() {
-    const levainValue = Math.max(1, parseFloat(document.getElementById('levain').value) || 1);
-    document.getElementById('levain').value = levainValue;
-
-    let result = `${koreanNames['levain']}: ${levainValue.toFixed(1)}g<br>`;
+    let changedRatio = 1;
+    let changedIngredient = '';
     
-    Object.keys(originalRatio).forEach(ing => {
-        if (ing !== 'levain') {
-            const newValue = levainValue * originalRatio[ing];
-            result += `${koreanNames[ing]}: ${newValue.toFixed(1)}g<br>`;
+    ingredients.forEach(ing => {
+        const input = document.getElementById(ing);
+        const value = parseFloat(input.value);
+        if (!isNaN(value) && value > 0) {
+            const ratio = value / originalRatio[ing];
+            if (Math.abs(ratio - 1) > 0.0001) {  // 작은 변화도 감지
+                changedRatio = ratio;
+                changedIngredient = ing;
+            }
         }
+        // 입력값이 비어있으면 원래 값으로 설정
+        if (input.value === '') {
+            input.value = originalRatio[ing];
+        }
+    });
+
+    let result = '';
+    ingredients.forEach(ing => {
+        let newValue;
+        if (ing === changedIngredient) {
+            newValue = parseFloat(document.getElementById(ing).value);
+        } else {
+            newValue = originalRatio[ing] * changedRatio;
+        }
+        result += `${koreanNames[ing]}: ${newValue.toFixed(1)}g<br>`;
     });
 
     document.getElementById('result').innerHTML = result;
@@ -33,9 +51,7 @@ function calculateRecipe() {
 ingredients.forEach(ing => {
     const input = document.getElementById(ing);
     input.addEventListener('input', calculateRecipe);
-    input.addEventListener('change', calculateRecipe);
+    input.addEventListener('change', calculateRecipe);  // change 이벤트 추가
 });
 
-// 초기값 설정
-//document.getElementById('levain').value = 400;
-//calculateRecipe(); // 초기 계산
+calculateRecipe(); // 초기 계산
