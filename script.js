@@ -15,17 +15,17 @@ const koreanNames = {
 };
 
 function calculateRecipe() {
-    let maxRatio = 1;
+    let changedRatio = 1;
     
     ingredients.forEach(ing => {
-        const value = parseFloat(document.getElementById(ing).value);
+        const value = parseFloat(document.getElementById(ing).value) || 0;
         const ratio = value / originalRatio[ing];
-        if (ratio > maxRatio) maxRatio = ratio;
+        if (ratio !== 0 && ratio < changedRatio) changedRatio = ratio;
     });
 
     let result = '';
     ingredients.forEach(ing => {
-        const newValue = (originalRatio[ing] * maxRatio).toFixed(1);
+        const newValue = (originalRatio[ing] * changedRatio).toFixed(1);
         result += `${koreanNames[ing]}: ${newValue}g<br>`;
     });
 
@@ -33,7 +33,9 @@ function calculateRecipe() {
 }
 
 ingredients.forEach(ing => {
-    document.getElementById(ing).addEventListener('input', calculateRecipe);
+    const input = document.getElementById(ing);
+    input.addEventListener('input', calculateRecipe);
+    input.addEventListener('blur', calculateRecipe);
 });
 
 calculateRecipe(); // 초기 계산
